@@ -632,6 +632,7 @@ def get_k_data(code=None, start='', end='',
     symbol = ct.INDEX_SYMBOL[code] if index else _code_to_symbol(code)
     url = ''
     dataflag = ''
+    autype = '' if autype is None else autype
     if ktype.upper() in ct.K_LABELS:
         fq = autype if autype is not None else ''
         if code[:1] in ('1', '5') or index:
@@ -672,6 +673,8 @@ def get_k_data(code=None, start='', end='',
                 df['date'] = df['date'].map(lambda x: '%s-%s-%s %s:%s'%(x[0:4], x[4:6], 
                                                                         x[6:8], x[8:10], 
                                                                         x[10:12]))
+            for col in df.columns[1:6]:
+                df[col] = df[col].astype(float)
             return df
     raise IOError(ct.NETWORK_URL_ERROR_MSG)
     
@@ -715,3 +718,4 @@ def _code_to_symbol(code):
         else:
             return 'sh%s'%code if code[:1] in ['5', '6', '9'] else 'sz%s'%code
         
+
